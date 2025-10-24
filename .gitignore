@@ -13,13 +13,6 @@ dist/
 build/
 coverage/
 
-# Environment variables
-.env
-*.env.local
-local.settings.json
-
-# Database files
-*.db
 
 # Docker artifacts
 docker-data/

@@ -1,0 +1,11 @@
+{
+  "IsEncrypted": false,
+  "Values": {
+    "AzureWebJobsStorage": "UseDevelopmentStorage=true",
+    "FUNCTIONS_WORKER_RUNTIME": "node",
+    "NOTIFICATION_PROVIDER": "console",
+    "MONGODB_URI": "mongodb+srv://prestus:prestus@prestus.hviowp2.mongodb.net/?appName=prestus",
+    "MONGODB_DB_NAME": "prestus",
+    "MONGODB_COLLECTION": "notifications"
+  }
+}
