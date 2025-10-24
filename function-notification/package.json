@@ -1,0 +1,13 @@
+{
+  "name": "function-notification",
+  "version": "1.0.0",
+  "description": "Azure Function para enviar notificações do Prestus",
+  "scripts": {
+    "start": "func start",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "dependencies": {
+    "dotenv": "^17.2.3",
+    "mongodb": "^6.9.0"
+  }
+}

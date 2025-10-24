@@ -1,0 +1,74 @@
+version: '3.9'
+
+services:
+  microservice-jobs:
+    build: ./microservice-jobs
+    ports:
+      - "3001:3001"
+    environment:
+      PORT: 3001
+      MONGODB_URI: ${MONGODB_URI}
+      MONGODB_DB_NAME: ${MONGODB_DB_NAME:-prestus}
+      MONGODB_COLLECTION: ${MONGODB_COLLECTION:-jobs}
+
+  microservice-bookings:
+    build: ./microservice-bookings
+    ports:
+      - "3002:3002"
+    environment:
+      PORT: 3002
+      SQL_SERVER: ${SQL_SERVER}
+      SQL_DATABASE: ${SQL_DATABASE}
+      SQL_USER: ${SQL_USER}
+      SQL_PASSWORD: ${SQL_PASSWORD}
+      SQL_PORT: ${SQL_PORT:-1433}
+      SQL_ENCRYPT: ${SQL_ENCRYPT:-true}
+      SQL_TRUST_SERVER_CERT: ${SQL_TRUST_SERVER_CERT:-false}
+
+  function-payment:
+    build: ./function-payment
+    ports:
+      - "7071:80"
+    environment:
+      AzureWebJobsStorage: UseDevelopmentStorage=true
+      FUNCTIONS_WORKER_RUNTIME: node
+      WEBSITES_PORT: 80
+
+  function-notification:
+    build: ./function-notification
+    ports:
+      - "7072:80"
+    environment:
+      AzureWebJobsStorage: UseDevelopmentStorage=true
+      FUNCTIONS_WORKER_RUNTIME: node
+      WEBSITES_PORT: 80
+      NOTIFICATION_PROVIDER: console
+      MONGODB_URI: ${MONGODB_URI}
+      MONGODB_DB_NAME: ${MONGODB_DB_NAME:-prestus}
+      MONGODB_COLLECTION: ${MONGODB_NOTIFICATION_COLLECTION:-notifications}
+
+  bff-gateway:
+    build: ./bff-gateway
+    ports:
+      - "3000:3000"
+    environment:
+      PORT: 3000
+      JOBS_SERVICE_URL: http://microservice-jobs:3001
+      BOOKINGS_SERVICE_URL: http://microservice-bookings:3002
+      NOTIFICATION_FUNCTION_URL: http://function-notification:80/api/send-notification
+      PAYMENT_FUNCTION_URL: http://function-payment:80/api/process-payment
+    depends_on:
+      - microservice-jobs
+      - microservice-bookings
+      - function-payment
+      - function-notification
+
+  microfrontend:
+    build:
+      context: ./microfrontend
+      args:
+        VITE_API_BASE_URL: http://localhost:3000/api
+    ports:
+      - "8080:80"
+    depends_on:
+      - bff-gateway

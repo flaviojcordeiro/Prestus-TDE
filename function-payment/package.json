@@ -1,0 +1,13 @@
+{
+  "name": "function-payment",
+  "version": "1.0.0",
+  "description": "Azure Function para processar pagamentos do Prestus",
+  "scripts": {
+    "start": "func start",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "dependencies": {
+    "dotenv": "^17.2.3",
+    "uuid": "^13.0.0"
+  }
+}
