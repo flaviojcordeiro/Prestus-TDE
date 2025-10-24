@@ -1,6 +1,5 @@
 // microservice-jobs/index.js
 const path = require('path');
-const express = require('express');
 const sqlite3 = require('sqlite3').verbose();
 const express = require('express');
 const cors = require('cors');
