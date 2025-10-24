@@ -111,17 +111,16 @@ app.delete('/api/bookings/:id', async (req, res) => {
 
 app.get('/api/dashboard', async (req, res) => {
   try {
-    const [jobsResponse, bookingsResponse, notificationsResponse] = await Promise.all([
+    const [jobsResponse, notificationsResponse] = await Promise.all([
       axios.get(`${JOBS_SERVICE_URL}/jobs`, { params: { status: req.query.status } }),
-      axios.get(`${BOOKINGS_SERVICE_URL}/bookings`),
-      axios.get(NOTIFICATION_FUNCTION_URL, { params: { limit: req.query.notificationsLimit || 20 } })
+      axios.get(NOTIFICATION_FUNCTION_URL, { params: { limit: req.query.notificationsLimit || 20 } }).catch(() => ({ data: [] }))
     ]);
 
-    const notificationsPayload = notificationsResponse.data?.items || notificationsResponse.data;
+    const notificationsPayload = notificationsResponse?.data?.items || notificationsResponse?.data || [];
 
     res.json({
       jobs: jobsResponse.data,
-      bookings: bookingsResponse.data,
+      bookings: [],
       notifications: notificationsPayload
     });
   } catch (error) {

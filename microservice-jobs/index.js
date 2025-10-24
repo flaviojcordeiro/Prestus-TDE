@@ -1,11 +1,10 @@
 // microservice-jobs/index.js
-const path = require('path');
-const sqlite3 = require('sqlite3').verbose();
-const express = require('express');
-const cors = require('cors');
-const { v4: uuidv4 } = require('uuid');
-const { MongoClient, ServerApiVersion } = require('mongodb');
-require('dotenv').config();
+import express from 'express';
+import cors from 'cors';
+import { v4 as uuidv4 } from 'uuid';
+import { MongoClient, ServerApiVersion } from 'mongodb';
+import dotenv from 'dotenv';
+dotenv.config();
 
 const app = express();
 app.use(cors());

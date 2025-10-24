@@ -1,10 +1,23 @@
 version: '3.9'
 
 services:
+  mongodb:
+    image: mongo:latest
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongodb_data:/data/db
+    networks:
+      - prestus-network
+  
   microservice-jobs:
     build: ./microservice-jobs
     ports:
       - "3001:3001"
+    networks:
+      - prestus-network
+    depends_on:
+      - mongodb
     environment:
       PORT: 3001
       MONGODB_URI: ${MONGODB_URI}
@@ -15,6 +28,8 @@ services:
     build: ./microservice-bookings
     ports:
       - "3002:3002"
+    networks:
+      - prestus-network
     environment:
       PORT: 3002
       SQL_SERVER: ${SQL_SERVER}
@@ -29,6 +44,8 @@ services:
     build: ./function-payment
     ports:
       - "7071:80"
+    networks:
+      - prestus-network
     environment:
       AzureWebJobsStorage: UseDevelopmentStorage=true
       FUNCTIONS_WORKER_RUNTIME: node
@@ -38,6 +55,8 @@ services:
     build: ./function-notification
     ports:
       - "7072:80"
+    networks:
+      - prestus-network
     environment:
       AzureWebJobsStorage: UseDevelopmentStorage=true
       FUNCTIONS_WORKER_RUNTIME: node
@@ -57,6 +76,8 @@ services:
       BOOKINGS_SERVICE_URL: http://microservice-bookings:3002
       NOTIFICATION_FUNCTION_URL: http://function-notification:80/api/send-notification
       PAYMENT_FUNCTION_URL: http://function-payment:80/api/process-payment
+    networks:
+      - prestus-network
     depends_on:
       - microservice-jobs
       - microservice-bookings
@@ -70,5 +91,14 @@ services:
         VITE_API_BASE_URL: http://localhost:3000/api
     ports:
       - "8080:80"
+    networks:
+      - prestus-network
     depends_on:
       - bff-gateway
+
+volumes:
+  mongodb_data:
+
+networks:
+  prestus-network:
+    driver: bridge

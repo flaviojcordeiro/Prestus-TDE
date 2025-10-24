@@ -35,14 +35,21 @@ async function connectSql() {
 
   pool = await sql.connect(sqlConfig);
 
-  const createTableQuery = `IF NOT EXISTS (SELECT * FROM sysobjects WHERE name='Bookings' AND xtype='U')
+  const createTableQuery = `
+    IF NOT EXISTS (SELECT * FROM sysobjects WHERE name='Bookings' AND xtype='U')
     CREATE TABLE Bookings (
       Id UNIQUEIDENTIFIER PRIMARY KEY,
       JobId NVARCHAR(64) NOT NULL,
       WorkerName NVARCHAR(120) NOT NULL,
       WorkerContact NVARCHAR(120) NOT NULL,
-      Status NVARCHAR(40) DEFAULT 'pending',
-      CreatedAt DATETIME2 DEFAULT SYSUTCDATETIME()
+      PaymentStatus NVARCHAR(40) DEFAULT 'pending',
+      BookingStatus NVARCHAR(40) DEFAULT 'pending',
+      Amount DECIMAL(10,2) DEFAULT 0.00,
+      PaymentMethod NVARCHAR(40) DEFAULT 'pix',
+      CreatedAt DATETIME2 DEFAULT SYSUTCDATETIME(),
+      UpdatedAt DATETIME2,
+      PaymentId UNIQUEIDENTIFIER,
+      NotificationId UNIQUEIDENTIFIER
     )`;
 
   await pool.request().query(createTableQuery);
