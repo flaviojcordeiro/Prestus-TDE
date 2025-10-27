@@ -17,7 +17,8 @@
     "dotenv": "^17.2.3",
     "express": "^5.1.0",
     "mongodb": "^6.9.0",
-    "uuid": "^8.3.2"
+    "uuid": "^8.3.2",
+    "sqlite3": "^5.1.6" 
   },
   "devDependencies": {
     "nodemon": "^3.1.7"

@@ -62,7 +62,7 @@ function mapBooking(record) {
     job_id: record.JobId,
     worker_name: record.WorkerName,
     worker_contact: record.WorkerContact,
-    status: record.Status,
+    status: record.BookingStatus,
     created_at: record.CreatedAt
   };
 }
@@ -115,7 +115,7 @@ app.post('/bookings', async (req, res) => {
 
     const id = uuidv4();
 
-    const insertQuery = `INSERT INTO Bookings (Id, JobId, WorkerName, WorkerContact, Status)
+    const insertQuery = `INSERT INTO Bookings (Id, JobId, WorkerName, WorkerContact, BookingStatus)
       OUTPUT INSERTED.*
       VALUES (@Id, @JobId, @WorkerName, @WorkerContact, @Status)`;
 
@@ -139,7 +139,7 @@ app.put('/bookings/:id/status', async (req, res) => {
     const { status } = req.body;
     if (!status) return res.status(400).json({ error: 'Campo obrigatório: status' });
 
-    const updateQuery = `UPDATE Bookings SET Status = @Status WHERE Id = @Id`;
+    const updateQuery = `UPDATE Bookings SET BookingStatus = @Status, UpdatedAt = SYSUTCDATETIME() WHERE Id = @Id`;
     const result = await pool
       .request()
       .input('Id', sql.UniqueIdentifier, req.params.id)

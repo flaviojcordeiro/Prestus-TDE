@@ -111,8 +111,9 @@ app.delete('/api/bookings/:id', async (req, res) => {
 
 app.get('/api/dashboard', async (req, res) => {
   try {
-    const [jobsResponse, notificationsResponse] = await Promise.all([
+    const [jobsResponse, bookingsResponse, notificationsResponse] = await Promise.all([
       axios.get(`${JOBS_SERVICE_URL}/jobs`, { params: { status: req.query.status } }),
+      axios.get(`${BOOKINGS_SERVICE_URL}/bookings`),
       axios.get(NOTIFICATION_FUNCTION_URL, { params: { limit: req.query.notificationsLimit || 20 } }).catch(() => ({ data: [] }))
     ]);
 
@@ -120,7 +121,7 @@ app.get('/api/dashboard', async (req, res) => {
 
     res.json({
       jobs: jobsResponse.data,
-      bookings: [],
+      bookings: bookingsResponse.data,
       notifications: notificationsPayload
     });
   } catch (error) {
